@@ -1,0 +1,42 @@
+<html>
+<head>
+    <script>
+        var global_var = 0;
+        var timer,repaintTimer = 0;
+        var i = 0;
+
+        function calculate(i) {
+            return new Promise(resolve => setTimeout(() => { global_var = i; resolve(global_var) }, 600))
+        }
+
+        window.onload = () => {
+            document.addEventListener("wheel", e => {
+                clearTimeout(timer);
+                // clearTimeout(repaintTimer);
+                //先异步多线程计算
+                calculate(++i);
+                timer = setTimeout((...args) => {
+                    calculate(i).then((global_var) => {
+                        if(i === global_var){
+                            //如果相同的话，绘制
+                            console.log(i, global_var);
+                        }else{
+                            //如果不同，不绘制,画图回退解决方案
+                            console.log("不画");
+                            // repaintTimer = setTimeout(()=>{calculate(i).then((global_var) => {console.log(i, global_var);})},600)
+
+                        }
+                     })
+                }, 500, "first");
+            });
+            document.addEventListener("wheel", e => {
+                // console.log("qqq");
+            });
+        }
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>
